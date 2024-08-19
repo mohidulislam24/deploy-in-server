@@ -1,0 +1,61 @@
+1. Install JDK- 
+	sudo apt-get update
+	sudo apt-get install openjdk-x-jdk
+
+2. Set environment path at the end of the file /etc/profile
+	JAVA_HOME=/usr/lib/jvm/java-x-openjdk-amd64
+	PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
+	export JAVA_HOME
+	export JRE_HOME
+	export PATH
+
+3. Copy tomcat in /opt directory
+
+
+4. sudo nano /etc/systemd/system/tomcat.service
+
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/java-x-openjdk-amd64"
+Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true"
+
+Environment="CATALINA_BASE=/opt/apache-tomcat-x"
+Environment="CATALINA_HOME=/opt/apache-tomcat-x"
+Environment="CATALINA_PID=/opt/apache-tomcat-x/temp/tomcat.pid"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+ExecStart=/opt/apache-tomcat-x/bin/startup.sh
+ExecStop=/opt/apache-tomcat-x/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+5. 
+
+# Reload systemd to apply the changes
+sudo systemctl daemon-reload
+
+# Start the Tomcat service
+sudo systemctl start tomcat
+
+# Enable Tomcat to start at boot
+sudo systemctl enable tomcat
+
+# Start Tomcat
+sudo systemctl start tomcat
+
+# Restart Tomcat
+sudo systemctl status tomcat
+
+# Check
+http://your_server_ip:8080
